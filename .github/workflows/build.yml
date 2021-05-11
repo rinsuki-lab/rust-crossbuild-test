@@ -1,0 +1,44 @@
+name: Build
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        name:
+          - windows.x86
+          - windows.x86_64
+          - linux.x86_64
+          - macos.universal2
+        include:
+          - name: windows.x86
+            os: windows-latest
+            target: i686-pc-windows-msvc
+          - name: windows.x86_64
+            os: windows-latest
+            target: x86_64-pc-windows-msvc
+          - name: linux.x86_64
+            os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - name: macos.universal2
+            os: macOS-latest
+            target: x86_64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+      key: v1-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+    - run: cargo build -c release --target ${{ matrix.target }}
+    - run: cargo build -c release --target aarch64-apple-darwin
+      if: matrix.name == "macos.universal2"
