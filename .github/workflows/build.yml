@@ -26,8 +26,8 @@ jobs:
             target: x86_64-unknown-linux-gnu
           - name: macos.universal2
             os: macOS-latest
-            target: x86_64-apple-darwin
-            target-sub: aarch64-apple-darwin
+            target: aarch64-apple-darwin
+            target-sub: x86_64-apple-darwin
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@master
@@ -40,6 +40,7 @@ jobs:
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
+        target: ${{ matrix.target }}
     - run: cargo build --release --target ${{ matrix.target }}
     - run: cargo build --release --target ${{ matrix.target-sub }}
       if: matrix.target-sub != ''
