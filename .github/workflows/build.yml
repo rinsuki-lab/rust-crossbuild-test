@@ -54,10 +54,10 @@ jobs:
     - run: cargo build --release --target ${{ matrix.target-sub }}
       if: matrix.target-sub != ''
     - name: Create Universal Binary
-      run: lipo -create target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }} target/${{ matrix.target }}/${{ matrix.binname }} target/${{ matrix.target-sub }}/${{ matrix.binname }}
+      run: lipo -create target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }} target/${{ matrix.target }}/release/${{ matrix.binname }} target/${{ matrix.target-sub }}/release/${{ matrix.binname }}
       if: matrix.target-sub != '' && matrix.os == 'macOS-latest'
-    - run: cp target/${{ matrix.target }}/${{ matrix.binname }}${{ matrix.extension }} target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
+    - run: cp target/${{ matrix.target }}/release/${{ matrix.binname }}${{ matrix.extension }} target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.name }}
-        path: target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
+        path: target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
