@@ -35,7 +35,7 @@ jobs:
         path: |
           ~/.cargo/registry
           ~/.cargo/git
-      key: v1-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        key: v1-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
