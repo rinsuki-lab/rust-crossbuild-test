@@ -9,6 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
+        binname: rust-crossbuild-test
         name:
           - windows.x86
           - windows.x86_64
@@ -18,9 +19,11 @@ jobs:
           - name: windows.x86
             os: windows-latest
             target: i686-pc-windows-msvc
+            extension: .exe
           - name: windows.x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
+            extension: .exe
           - name: linux.x86_64
             os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
@@ -49,3 +52,11 @@ jobs:
     - run: cargo build --release --target ${{ matrix.target }}
     - run: cargo build --release --target ${{ matrix.target-sub }}
       if: matrix.target-sub != ''
+    - name: Create Universal Binary
+      run: lipo -create target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }} target/${{ matrix.target }}/${{ matrix.binname }} target/${{ matrix.target-sub }}/${{ matrix.binname }}
+      if: matrix.target-sub != '' && matrix.os == 'macOS-latest'
+    - run: cp target/${{ matrix.target }}/${{ matrix.binname }}${{ matrix.extension }} target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.name }}
+        path: target/${{ matrix.target }}/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
