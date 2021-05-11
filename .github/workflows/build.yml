@@ -9,7 +9,8 @@ jobs:
   build:
     strategy:
       matrix:
-        binname: rust-crossbuild-test
+        binname:
+          - rust-crossbuild-test
         name:
           - windows.x86
           - windows.x86_64
