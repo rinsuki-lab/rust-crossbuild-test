@@ -41,4 +41,4 @@ jobs:
         toolchain: stable
     - run: cargo build -c release --target ${{ matrix.target }}
     - run: cargo build -c release --target aarch64-apple-darwin
-      if: matrix.name == "macos.universal2"
+      if: matrix.name == 'macos.universal2'
