@@ -37,8 +37,10 @@ jobs:
           ~/.cargo/registry
           ~/.cargo/git
         key: v1-${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-    - name: Select Xcode
-      run: sudo xcode-select --switch /Applications/Xcode_12.4.app
+    - name: Setup macOS Build environment
+      run: |
+        sudo xcode-select --switch /Applications/Xcode_12.4.app
+        sudo rm -rf /Library/Developer/CommandLineTools
       if: matrix.name == 'macos.universal2'
     - uses: actions-rs/toolchain@v1
       with:
