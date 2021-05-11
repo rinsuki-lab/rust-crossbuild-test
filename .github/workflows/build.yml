@@ -4,6 +4,8 @@ on:
   push:
     branches:
     - master
+    tags:
+    - "*"
 
 jobs:
   build:
@@ -62,3 +64,27 @@ jobs:
       with:
         name: ${{ matrix.name }}
         path: target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: success() && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    steps:
+    - name: get version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.get_version.outputs.VERSION }}
+        draft: true
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+    - uses: svenstaro/upload-release-action@1.1.0
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: artifacts/*
+        tag: ${{ github.ref }}
+        file_glob: "true"
