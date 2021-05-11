@@ -57,6 +57,7 @@ jobs:
       run: lipo -create target/${{ matrix.target }}/release/${{ matrix.binname }} target/${{ matrix.target-sub }}/release/${{ matrix.binname }} -output target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }} 
       if: matrix.target-sub != '' && matrix.os == 'macOS-latest'
     - run: cp target/${{ matrix.target }}/release/${{ matrix.binname }}${{ matrix.extension }} target/${{ matrix.target }}/release/${{ matrix.binname }}.${{ matrix.name }}${{ matrix.extension }}
+      if: matrix.target-sub == ''
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.name }}
